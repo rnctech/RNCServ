@@ -1,0 +1,45 @@
+{% include 'header.html' %}
+    <body id="page-top">
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+            <div class="container px-4 px-lg-5">
+                <a class="navbar-brand" href="#page-top">RNCTech Questyion and Answers</a>
+                <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                    Menu
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/imageGen">ImageGen</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/imageUp">ImgUp</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#TextGen">TextGen</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        <section class="about-section text-center" id="TextGen">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-lg-8">
+                        <h2 class="text-white mb-4">Ask me something: </h2>
+                        <form action="#" method="post">
+                            <div class="form-group mb-3">
+                                <label for="textGenControlTextarea">Your question here</label>
+                                <textarea class="form-control" name="user_text_input" id="textGenControlTextarea" rows="2"></textarea>
+                            </div>
+                            <button class="btn btn-primary" type="submit">GO</button>
+                        </form>
+                        <p class="text-white">{{ ai_answer }}</p>
+                    </div>
+                </div>
+                <br/>
+                <img class="img-fluid" src="static/assets/img/RNCLogo.png" alt="..." />
+            </div>
+        </section>
+{% include 'about.html' %}
+
+        {% include 'contact.html' %}
+
+{% include 'footer.html' %}
