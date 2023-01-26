@@ -1,0 +1,80 @@
+{% include 'header.html' %}
+    <body id="page-top">
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-light fixed-top" id="mainNav">
+            <div class="container px-4 px-lg-5">
+                <a class="navbar-brand" href="#page-top">RNCTech Questyion and Answers</a>
+                <button class="navbar-toggler navbar-toggler-right" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                    Menu
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarResponsive">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item"><a class="nav-link" href="#about">About</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/">TextGen</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/imageUp">ImgUp</a></li>
+                        <li class="nav-item"><a class="nav-link" href="/imageGen">ImageGen</a>
+                        <li class="nav-item"><a class="nav-link" href="#CHGen">CHGen</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+         <section class="about-section text-center" id="CHGen">
+            <div class="container px-4 px-lg-5">
+                <div class="row gx-4 gx-lg-5 justify-content-center">
+                    <div class="col-lg-8">
+                        <h2 class="text-white mb-4">写诗,联,文案</h2>
+                        <form action="#" method="post">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <label for="chType" class="input-group-text">Choose type:</label>
+                                </div>
+                                <input class="form-control" list="chTypes" name="chType" id="chType">
+                                <datalist id="chTypes">
+                                    <option value="1">律诗</option>
+                                    <option value="2">对联</option>>
+                                    <option value="3">文案</option>>
+                                    <option value="4">藏头诗</option>>
+                                </datalist>
+                            </div>
+                            <div class="input-group mb-3">
+                              <div class="input-group-prepend">
+                                <label class="input-group-text" for="chLine">Choose lines</label>
+                              </div>
+                              <select class="custom-select" id="chLine" name="chLine">
+                                <option value="4">绝句</option>
+                                <option value="8">律诗</option>
+                              </select>
+                            </div>
+                            <div class="input-group mb-3">
+                              <div class="input-group-prepend">
+                                <label class="input-group-text" for="chWord">Choose Words of Line</label>
+                              </div>
+                              <select class="custom-select" id="chWord" name="chWord">
+                                <option value="7">七言</option>
+                                <option value="5">五言</option>
+                              </select>
+                            </div>
+                            <div class="form-group mb-3">
+                                <label for="imgGenControlTextarea">Your describe here</label>
+                                <textarea class="form-control" name="user_input" id="imgGenControlTextarea" rows="2">天清气爽人欢笑语</textarea>
+                            </div>
+                            <button class="btn btn-primary" type="submit">生成</button>
+                        </form>
+                        {% if ai_answer != "False" %}
+                        <div>
+                           <p class="text-break">{{ ai_answer }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <br/>
+                <img class="img-fluid" src="static/assets/img/RNCLogo.png" alt="..." />
+            </div>
+         </section>
+{% include 'about.html' %}
+
+        {% include 'contact.html' %}
+
+{% include 'footer.html' %}

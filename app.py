@@ -4,6 +4,7 @@ import openai
 import jinja2
 from werkzeug.utils import secure_filename
 import replicate
+from chgen import ChineseGen
 
 app = Flask(__name__)
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
@@ -11,8 +12,10 @@ UPLOAD_FOLDER = 'static/upload/'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 app.secret_key = 'Admin123!'
-os.environ["REPLICATE_API_TOKEN"] = '91a90050b1121467dcd4b6d6b43ea6acde9c9b1d'
-os.environ["API_TOKEN"] = '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'
+#os.environ["REPLICATE_API_TOKEN"] = 'YOUR_REPO_TOKEN'
+#os.environ["API_TOKEN"] = 'YOUR_OPENA|_TOKEN'
+
+chgen = ChineseGen()
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -59,11 +62,14 @@ def chgImage():
             flash('No replication token defined')
             return render_template('imgupload.html', ai_answer='False', user_image='False')
 
+        imgFidelity = float(request.form["imgFidelity"])
+        imgScale = int(request.form["imgScale"])
+
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             flash('Image successfully uploaded and displayed below')
-            nfile = chgImg(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            nfile = chgImg(os.path.join(app.config['UPLOAD_FOLDER'], filename), imgScale, imgFidelity)
             return render_template('imgupload.html', ai_answer=nfile, user_image=filename)
         else:
             flash('Allowed image types are -> png, jpg, jpeg, gif')
@@ -76,18 +82,40 @@ def display_image(filename):
     print('display_image filename: ' + filename)
     return redirect(url_for('static', filename='upload/' + filename), code=301)
 
-def chgImg(ofile):
+def chgImg(ofile, scale=2, fidelity=0.7):
     model = replicate.models.get("sczhou/codeformer")
     version = model.versions.get("7de2ea26c616d5bf2245ad0d5e24f0ff9a6204578a5c876db53142edd9d2cd56")
     inputs = {
         'image': open((ofile), "rb"), #open((os.path.join("/Users/admin/rnctech/RNCServ/", ofile)), "rb"),
-        'codeformer_fidelity': 0.7,
+        'codeformer_fidelity': fidelity,
         'background_enhance': True,
         'face_upsample': True,
-        'upscale': 2,
+        'upscale': scale,
     }
     output = version.predict(**inputs)
     return output
+
+@app.route('/siGen', methods=['GET','POST'])
+def getSiWen():
+    methods = {
+        1: "genSi",
+        2: "genCouplet",
+        3: "genSS",
+        4: "genSiWithHead"
+    }
+    if request.method == "POST":
+        user_input = request.form["user_input"]
+
+        chLine = int(request.form["chLine"])
+        chType = int(request.form["chType"])
+        mname = methods[chType]
+        func = getattr(chgen, mname)
+
+        chWord = int(request.form["chWord"])
+        results = func(user_input, chLine, chWord)
+        result = '<br/>'.join(results)
+        return render_template("chinese.html", ai_answer=result, requested="GeneratedSi")
+    return render_template('chinese.html', ai_answer='False')
 
 if __name__ == '__main__':
     app.run(debug=True, port=8080)
