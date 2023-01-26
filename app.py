@@ -5,6 +5,7 @@ import jinja2
 from werkzeug.utils import secure_filename
 import replicate
 from chgen import ChineseGen
+from Img import ImageModify
 
 app = Flask(__name__)
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
@@ -16,6 +17,7 @@ app.secret_key = 'Admin123!'
 #os.environ["API_TOKEN"] = 'YOUR_OPENA|_TOKEN'
 
 chgen = ChineseGen()
+imgm = ImageModify()
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -69,7 +71,7 @@ def chgImage():
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
             flash('Image successfully uploaded and displayed below')
-            nfile = chgImg(os.path.join(app.config['UPLOAD_FOLDER'], filename), imgScale, imgFidelity)
+            nfile = imgm.chgImg(os.path.join(app.config['UPLOAD_FOLDER'], filename), imgScale, imgFidelity)
             return render_template('imgupload.html', ai_answer=nfile, user_image=filename)
         else:
             flash('Allowed image types are -> png, jpg, jpeg, gif')
@@ -81,19 +83,6 @@ def chgImage():
 def display_image(filename):
     print('display_image filename: ' + filename)
     return redirect(url_for('static', filename='upload/' + filename), code=301)
-
-def chgImg(ofile, scale=2, fidelity=0.7):
-    model = replicate.models.get("sczhou/codeformer")
-    version = model.versions.get("7de2ea26c616d5bf2245ad0d5e24f0ff9a6204578a5c876db53142edd9d2cd56")
-    inputs = {
-        'image': open((ofile), "rb"), #open((os.path.join("/Users/admin/rnctech/RNCServ/", ofile)), "rb"),
-        'codeformer_fidelity': fidelity,
-        'background_enhance': True,
-        'face_upsample': True,
-        'upscale': scale,
-    }
-    output = version.predict(**inputs)
-    return output
 
 @app.route('/siGen', methods=['GET','POST'])
 def getSiWen():
